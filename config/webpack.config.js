@@ -331,6 +331,12 @@ module.exports = function (webpackEnv) {
         }),
         ...(modules.webpackAliases || {}),
       },
+      fallback: {
+        path: require.resolve('path-browserify'),
+        stream: require.resolve('stream-browserify'),
+        crypto: require.resolve('crypto-browserify'),
+        assert: require.resolve('assert/'),
+      },
       plugins: [
         // Prevents users from importing files from outside of src/ (or node_modules/).
         // This often causes confusion because we only process files within src/ with babel.
@@ -344,6 +350,10 @@ module.exports = function (webpackEnv) {
           babelRuntimeEntry,
           babelRuntimeEntryHelpers,
           babelRuntimeRegenerator,
+          require.resolve('path-browserify'),
+          require.resolve('stream-browserify'),
+          require.resolve('assert/'),
+          require.resolve('crypto-browserify'),
         ]),
       ],
     },
@@ -602,6 +612,10 @@ module.exports = function (webpackEnv) {
       ].filter(Boolean),
     },
     plugins: [
+      new webpack.ProvidePlugin({
+        process: 'process/browser',
+        Buffer: ['buffer', 'Buffer']
+      }),
       // Generates an `index.html` file with the <script> injected.
       new HtmlWebpackPlugin(
         Object.assign(
